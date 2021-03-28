@@ -1,2 +1,1 @@
-Hello, Welcome to this course!
-Pipeline as CCCCCCCCC
+Hello, Welcome to this course!Pipeline as CCCCCCCCC
