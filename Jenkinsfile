@@ -15,5 +15,10 @@ pipeline {
                 }
             }
         }
+        stage('deploy_local'){
+            steps{
+                build job: 'deploy-to-local'
+            }
+        }
     }
 }
