@@ -1,8 +1,12 @@
 pipeline {
     agent any
-    tools{
-        maven 'local_MVN'
+    parameters{
+        string(name: 'tomcat_local',defaultValue: '127.0.0.1',description: 'local example')
     }
+    triggers {
+        pollSCM('* * * * *')
+    }
+
     stages{
         stage('Build'){
             steps {
@@ -10,25 +14,19 @@ pipeline {
             }
             post {
                 success {
-                    echo '开始...'
+                    echo '开始存档...'
                     archiveArtifacts artifacts: '**/target/*.war'
                 }
             }
         }
-        stage('deploy_local'){
-            steps{
-                timeout(time:5, unit: 'DAYS'){
-                    input message: '部署嗎？？？'
-                }
-                build job: 'deploy-to-local'
-            }
-            post {
-                success {
-                    echo '部署囉～～～'
-                }
 
-                failure {
-                    echo '失敗囉～～'
+    stage ('Deployments'){
+            parallel{
+                stage ('Deploy to Staging'){
+                    steps {
+                        //sh "scp **/target/*.war ec2-user@${params.tomcat_local}:/var/lib/tomcat8/webapps"
+                        sh "cp **/target/*.war /opt/tomcat/webapps"
+                    }
                 }
             }
         }
